@@ -1,0 +1,25 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addNavigationHelpers, NavigationActions } from 'react-navigation';
+import Navigation from './navigation';
+
+class appNavigation extends Component {
+  render() {
+    console.log(this.props);
+    const { navState, dispatch } = this.props;
+
+    return (
+      < Navigation
+        navigation={addNavigationHelpers({ dispatch, state: navState })}
+      />
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    navState: state.navigationReducer
+  };
+};
+
+export default connect(mapStateToProps)(appNavigation);

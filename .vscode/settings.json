@@ -1,0 +1,7 @@
+{
+    "javascript.format.enable": false,
+    "prettier.eslintIntegration": true,
+    "prettier.singleQuote": true
+
+
+}
