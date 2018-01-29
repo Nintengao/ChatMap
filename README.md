@@ -1,3 +1,6 @@
+https://circleci.com/gh/ECE496ChatMap/ChatMap.svg?style=shield&circle-token=3f8abfa96607babe78ef5ea0b8885e5e71632ef4
+
+
 # ECE496 - University of Toronto - Chat Map
 
 This is a mobile app that connect the nearby people.
