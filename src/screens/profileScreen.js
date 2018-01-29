@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+import Header from './profile/Header'
+import Bar from './profile/Bar'
 
 class ProfileScreen extends Component {
 
@@ -19,15 +22,20 @@ class ProfileScreen extends Component {
 
   render() {
     return (
-      <View>
-        <Text>ProfileScreen</Text>
-        <Text>ProfileScreen</Text>
-        <Text>ProfileScreen</Text>
-        <Text>ProfileScreen</Text>
-        <Text>ProfileScreen</Text>
+      <View style = {styles.container}>
+        <Header />
+        <Bar />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000'
+
+  }
+});
 
 export default ProfileScreen;
