@@ -4,7 +4,6 @@ import store from './store';
 import AppNavigation from './src/navigation';
 import firebase from 'firebase';
 
-
 export default class App extends Component {
   componentWillMount() {
     const config = {
