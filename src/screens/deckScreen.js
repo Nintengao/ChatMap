@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
 
 class DeckScreen extends Component {
-
   static navigationOptions = {
     title: 'Deck'
-  }
+  };
 
   render() {
     return (
@@ -20,4 +20,4 @@ class DeckScreen extends Component {
   }
 }
 
-export default DeckScreen;
+export default connect()(DeckScreen);
