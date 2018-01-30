@@ -1,0 +1,77 @@
+import React from 'react';
+import {
+  Text,
+  View,
+  TouchableOpacity
+} from 'react-native';
+import { Section } from './common';
+
+const ChatRoomDetail = ({ room }) => {
+  const { question, issuer } = room;
+  const {
+    thumbnailStyle,
+    headerContentStyle,
+    thumbnailContainerStyle,
+    headerTextStyle,
+    imageStyle
+  } = styles;
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity>
+        <Section>
+          <View style={styles.contentStyle}>
+            <Text>Question: {question}</Text>
+          </View>
+        </Section>
+
+        <Section>
+        <View style={styles.contentStyle}>
+          <Text>Issuer: {issuer}</Text>
+        </View>
+        </Section>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const styles = {
+  container: {
+    borderWidth: 1,
+    borderRadius: 2,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10
+  },
+  contentStyle: {
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  headerTextStyle: {
+    fontSize: 18
+  },
+  thumbnailStyle: {
+    height: 50,
+    width: 50
+  },
+  thumbnailContainerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  imageStyle: {
+    height: 300,
+    flex: 1,
+    width: null
+  }
+};
+
+export default ChatRoomDetail;

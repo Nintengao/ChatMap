@@ -5,3 +5,8 @@ export * from './Header';
 export * from './Input';
 export * from './Spinner';
 export * from './Confirm';
+export * from './SearchButton';
+export * from './CustomMarker';
+export * from './MapInput';
+export * from './IssueButton';
+export * from './IssueForm';
