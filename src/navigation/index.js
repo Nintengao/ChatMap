@@ -5,11 +5,10 @@ import Navigation from './navigation';
 
 class appNavigation extends Component {
   render() {
-    console.log(this.props);
     const { navState, dispatch } = this.props;
 
     return (
-      < Navigation
+      <Navigation
         navigation={addNavigationHelpers({ dispatch, state: navState })}
       />
     );

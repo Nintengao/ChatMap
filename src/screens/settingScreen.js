@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity} from 'react-native';
-import {NavigationActions} from 'react-navigation';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { logoutUser } from '../actions';
 
 class SettingScreen extends Component {
-
-  navigate = () => {
-    const nav = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'auth'})
-      ]
-    });
-    this.props.navigation.dispatch(nav);
-  }
-
   render() {
     return (
       <View
@@ -30,7 +20,7 @@ class SettingScreen extends Component {
             paddingHorizontal: 40,
             backgroundColor: 'blue'
           }}
-          onPress={this.navigate}
+          onPress={() => this.props.logoutUser()}
         >
           <Text style={{ fontSize: 23, fontWeight: '600', color: 'white' }}>
             Logout
@@ -41,4 +31,11 @@ class SettingScreen extends Component {
   }
 }
 
-export default SettingScreen;
+const mapStateToProps = state => {
+  return {
+    error: state.authReducer.error,
+    loading: state.authReducer.loading
+  };
+};
+
+export default connect(mapStateToProps, { logoutUser })(SettingScreen);
