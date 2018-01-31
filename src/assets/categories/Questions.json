@@ -1,6 +1,6 @@
-[{
-    "music": "#F44336",
-    "study": "#4CAF50",
-    "sport": "#2196F3",
-    "other": "#FF9800"
-}]
+{
+    "Music": "#F44336",
+    "Study": "#4CAF50",
+    "Sport": "#2196F3",
+    "Other": "#FF9800"
+}
