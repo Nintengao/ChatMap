@@ -6,7 +6,8 @@ import {
   LOGIN_USER_START,
   LOGOUT_USER_START,
   LOGOUT_USER_SUCCESS,
-  LOGOUT_USER_FAIL
+  LOGOUT_USER_FAIL,
+  SIGNUP_USER_FAIL
 } from './types';
 
 import firebase from 'firebase';
@@ -34,6 +35,18 @@ export const loginUser = ({ email, password }) => {
       .signInWithEmailAndPassword(email, password)
       .then(user => loginUserSuccess(dispatch, user))
       .catch(() => loginUserFail(dispatch));
+  };
+};
+
+export const signupUser = ({ email, password }) => {
+  return dispatch => {
+    dispatch({ type: LOGIN_USER_START });
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => loginUserSuccess(dispatch, user))
+      .catch(error => signupUserFailed(dispatch, error));
   };
 };
 
@@ -69,4 +82,11 @@ const logoutUserSuccess = (dispatch, user) => {
 
 const logoutUserFail = dispatch => {
   dispatch({ type: LOGOUT_USER_FAIL });
+};
+
+const signupUserFailed = (dispatch, error) => {
+  dispatch({
+    type: SIGNUP_USER_FAIL,
+    payload: error
+  });
 };

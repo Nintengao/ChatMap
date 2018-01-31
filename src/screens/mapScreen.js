@@ -17,37 +17,37 @@ import {
   CustomMarker,
   MapInput,
   IssueButton,
-  IssueForm,
- } from '../components'
+  IssueForm
+} from '../components';
 
- const screen = Dimensions.get('window');
- const WINDOW_HEIGHT = screen.height;
- const WINDOW_WIDTH = screen.width;
- const ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT;
- const LATITUDE = 43.6608;
- const LONGITUDE = -79.3955;
- const LATITUDE_DELTA = 0.0922;
- const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const screen = Dimensions.get('window');
+const WINDOW_HEIGHT = screen.height;
+const WINDOW_WIDTH = screen.width;
+const ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT;
+const LATITUDE = 43.6608;
+const LONGITUDE = -79.3955;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
- const FORM_WIDTH = WINDOW_WIDTH - 40;
- const FORM_HEIGHT = WINDOW_HEIGHT - 200;
+const FORM_WIDTH = WINDOW_WIDTH - 40;
+const FORM_HEIGHT = WINDOW_HEIGHT - 200;
 
 class MapScreen extends Component {
   static navigationOptions = {
     title: 'Map',
     header: null
-  }
+  };
 
   state = {
     region: {
       latitude: 37.78825,
       longitude: -122.4324,
       latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
     },
     showForm: false,
-    topicContent: "",
-    topicCategory: "Music",
+    topicContent: '',
+    topicCategory: 'Music'
   };
 
   componentDidMount() {
@@ -66,7 +66,7 @@ class MapScreen extends Component {
   getCurrentPosition() {
     try {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        position => {
           this.setState({
             region: {
               latitude: position.coords.latitude,
@@ -76,7 +76,7 @@ class MapScreen extends Component {
             }
           });
         },
-        (error) => {
+        error => {
           console.log(error);
           switch (error.code) {
             case 1:
@@ -93,44 +93,40 @@ class MapScreen extends Component {
   }
 
   watchPosition() {
-    this.watchID = navigator.geolocation.watchPosition(
-      position => {
-        this.setState({
-          region: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          }
-        });
-      }
-    );
+    this.watchID = navigator.geolocation.watchPosition(position => {
+      this.setState({
+        region: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        }
+      });
+    });
   }
 
   openSearchModal() {
     RNGooglePlaces.openAutocompleteModal()
-    .then((place) => {
-		console.log(place);
-		// place represents user's selection from the
-		// suggestions and it is a simplified Google Place object.
-    this.setState({
-      region: {
-        latitude: place.latitude,
-        longitude: place.longitude,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-    });
-    })
-    .catch(error => console.log(error.message));  // error is a Javascript Error object
+      .then(place => {
+        console.log(place);
+        // place represents user's selection from the
+        // suggestions and it is a simplified Google Place object.
+        this.setState({
+          region: {
+            latitude: place.latitude,
+            longitude: place.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+          }
+        });
+      })
+      .catch(error => console.log(error.message)); // error is a Javascript Error object
   }
 
   renderSearchButton() {
     return (
       <View style={styles.searchView}>
-        <SearchButton
-          onPress={() => this.openSearchModal()}
-        >
+        <SearchButton onPress={() => this.openSearchModal()}>
           <Text>Explore your surrounding</Text>
         </SearchButton>
       </View>
@@ -143,10 +139,12 @@ class MapScreen extends Component {
     var currentTime = d.toUTCString();
 
     const { currentUser } = firebase.auth();
-    firebase.database().ref(`users/${currentUser.uid}/topics`)
+    firebase
+      .database()
+      .ref(`users/${currentUser.uid}/topics`)
       .push({ topicContent, topicCategory, region, currentTime });
     this.setState({ showForm: false });
-  }
+  };
 
   renderIssueForm() {
     if (this.state.showForm) {
@@ -156,8 +154,10 @@ class MapScreen extends Component {
       return (
         <View style={styles.issueFormStyle}>
           <IssueForm
-            onContentChange={(text) => this.setState({topicContent: text})}
-            onPickerValueChange={(itemValue, itemIndex) => this.setState({topicCategory: itemValue})}
+            onContentChange={text => this.setState({ topicContent: text })}
+            onPickerValueChange={(itemValue, itemIndex) =>
+              this.setState({ topicCategory: itemValue })
+            }
             pickerSelectedValue={this.state.topicCategory}
             onSubmitPress={this.onTopicSubmit.bind(this)}
           />
@@ -170,12 +170,10 @@ class MapScreen extends Component {
 
   onIssueButtonPress = () => {
     this.setState({ showForm: !this.state.showForm });
-  }
+  };
 
   renderIssueButton() {
-    return (
-      <IssueButton onPress={this.onIssueButtonPress} />
-    );
+    return <IssueButton onPress={this.onIssueButtonPress} />;
   }
 
   renderMarkers() {
@@ -184,11 +182,7 @@ class MapScreen extends Component {
     //   .on('value', snapshot => {
     //     snapshot.val()
     //   });
-    return (
-      <CustomMarker
-        coordinate={this.state.region}
-      />
-    );
+    return <CustomMarker coordinate={this.state.region} />;
   }
 
   render() {
@@ -202,11 +196,11 @@ class MapScreen extends Component {
           onRegionChange={this.onRegionChange.bind(this)}
           onRegionChangeComplete={this.onRegionChange.bind(this)}
         >
-          { this.renderMarkers() }
+          {this.renderMarkers()}
         </MapView>
-        { this.renderSearchButton() }
-        { this.renderIssueForm() }
-        { this.renderIssueButton() }
+        {this.renderSearchButton()}
+        {this.renderIssueForm()}
+        {this.renderIssueButton()}
       </View>
     );
   }
@@ -220,7 +214,7 @@ const styles = {
   },
   container: {
     flexDirection: 'column',
-    flex: 1,
+    flex: 1
   },
   searchView: {
     height: 50,
@@ -231,11 +225,11 @@ const styles = {
     left: 0,
     right: 0,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   issueButtonStyle: {
     height: WINDOW_HEIGHT,
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   issueFormStyle: {
     height: FORM_HEIGHT,

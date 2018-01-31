@@ -1,10 +1,8 @@
 import {
   LOGIN_USER_SUCCESS,
-  LOGIN_USER_FAIL,
   LOGIN_USER_START,
   LOGOUT_USER_START,
-  LOGOUT_USER_SUCCESS,
-  LOGOUT_USER_FAIL
+  LOGOUT_USER_SUCCESS
 } from '../actions/types';
 
 import navigator from '../navigation/navigation';
@@ -20,16 +18,15 @@ const stateAtMain = navigator.router.getStateForAction(actionToMain);
 const initState = stateAtAuth;
 
 const navigationReducer = (state = initState, action) => {
+  console.log(action);
   switch (action.type) {
     default:
       return navigator.router.getStateForAction(action, state) || state;
     case LOGIN_USER_START:
-    case LOGIN_USER_FAIL:
       return state;
     case LOGIN_USER_SUCCESS:
       return navigator.router.getStateForAction(actionToMain, stateAtAuth);
     case LOGOUT_USER_START:
-    case LOGOUT_USER_FAIL:
       return state;
     case LOGOUT_USER_SUCCESS:
       return navigator.router.getStateForAction(reset);

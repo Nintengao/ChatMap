@@ -6,7 +6,8 @@ import {
   LOGIN_USER_START,
   LOGOUT_USER_START,
   LOGOUT_USER_SUCCESS,
-  LOGOUT_USER_FAIL
+  LOGOUT_USER_FAIL,
+  SIGNUP_USER_FAIL
 } from '../actions/types';
 
 const initState = {
@@ -70,7 +71,14 @@ const authReducer = (state = initState, action) => {
         password: '',
         loading: false
       };
-
+    case SIGNUP_USER_FAIL:
+      return {
+        ...state,
+        error: action.payload.message,
+        password: '',
+        email: '',
+        loading: false
+      };
     default:
       return state;
   }

@@ -6,3 +6,4 @@ export const LOGIN_USER_START = 'login_user_start';
 export const LOGOUT_USER_START = 'logout_user_start';
 export const LOGOUT_USER_SUCCESS = 'logout_user_success';
 export const LOGOUT_USER_FAIL = 'logout_user_failed';
+export const SIGNUP_USER_FAIL = 'signup_user_failed';

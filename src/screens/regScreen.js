@@ -3,18 +3,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Card, CardSection, Input, Button, Spinner } from '../components';
 import { connect } from 'react-redux';
-import { emailChanged, passwordChanged, loginUser } from '../actions';
+import { emailChanged, passwordChanged, signupUser } from '../actions';
 
-class AuthScreen extends Component {
+class RegScreen extends Component {
   static navigationOptions = {
-    title: 'Authentication'
-  };
-
-  navigate = () => {
-    const nav = NavigationActions.navigate({
-      routeName: 'reg'
-    });
-    this.props.navigation.dispatch(nav);
+    title: 'Sign Up'
   };
 
   renderError() {
@@ -35,24 +28,17 @@ class AuthScreen extends Component {
     }
   }
 
-  renderLoginButton() {
+  renderButton() {
     const { email, password } = this.props;
 
     if (this.props.loading) {
       return <Spinner size="large" />;
     }
     return (
-      <Button onPress={() => this.props.loginUser({ email, password })}>
-        Login
+      <Button onPress={() => this.props.signupUser({ email, password })}>
+        Sign Up
       </Button>
     );
-  }
-
-  renderSignUpButton() {
-    if (this.props.loading) {
-      return <Spinner size="large" />;
-    }
-    return <Button onPress={this.navigate}>New User?</Button>;
   }
 
   render() {
@@ -81,8 +67,7 @@ class AuthScreen extends Component {
 
         {this.renderError()}
 
-        <CardSection>{this.renderLoginButton()}</CardSection>
-        <CardSection>{this.renderSignUpButton()}</CardSection>
+        <CardSection>{this.renderButton()}</CardSection>
       </Card>
     );
   }
@@ -101,5 +86,5 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   emailChanged,
   passwordChanged,
-  loginUser
-})(AuthScreen);
+  signupUser
+})(RegScreen);
