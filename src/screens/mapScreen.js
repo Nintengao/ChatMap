@@ -3,9 +3,6 @@ import {
   View,
   Alert,
   Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
   Text
 } from 'react-native';
 import MapView from 'react-native-maps';
@@ -15,10 +12,10 @@ import firebase from 'firebase';
 import {
   SearchButton,
   CustomMarker,
-  MapInput,
   IssueButton,
   IssueForm
 } from '../components';
+import TopicType from '../assets/categories/Questions.json';
 
 const screen = Dimensions.get('window');
 const WINDOW_HEIGHT = screen.height;
@@ -32,6 +29,36 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const FORM_WIDTH = WINDOW_WIDTH - 40;
 const FORM_HEIGHT = WINDOW_HEIGHT - 200;
 
+const MARKER_LATITUDE = 43.6466495;
+const MARKER_LONGITUDE = -79.3759458;
+
+const markers = [
+  {
+    id: 0,
+    topic: 'Music',
+    coordinate: {
+      latitude: MARKER_LATITUDE,
+      longitude: MARKER_LONGITUDE
+    }
+  },
+  {
+    id: 1,
+    topic: 'Sport',
+    coordinate: {
+      latitude: MARKER_LATITUDE + 0.004,
+      longitude: MARKER_LONGITUDE - 0.004
+    }
+  },
+  {
+    id: 2,
+    topic: 'Study',
+    coordinate: {
+      latitude: MARKER_LATITUDE - 0.004,
+      longitude: MARKER_LONGITUDE - 0.004
+    }
+  }
+];
+
 class MapScreen extends Component {
   static navigationOptions = {
     title: 'Map',
@@ -41,7 +68,7 @@ class MapScreen extends Component {
   constructor() {
     super();
     this.state = {
-      region: {
+      mapRegion: {
         latitude: INITIAL_LATITUDE,
         longitude: INITIAL_LONGITUDE,
         latitudeDelta: LATITUDE_DELTA,
@@ -50,12 +77,6 @@ class MapScreen extends Component {
       userRegion: {
         latitude: INITIAL_LATITUDE,
         longitude: INITIAL_LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      },
-      fixedRegion: {
-        latitude: 43.6466495,
-        longitude: -79.3759458,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       },
@@ -69,7 +90,13 @@ class MapScreen extends Component {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({
-          region: {
+          userRegion: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+          },
+          mapRegion: {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             latitudeDelta: LATITUDE_DELTA,
@@ -95,7 +122,7 @@ class MapScreen extends Component {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
           }
         });
       }
@@ -107,7 +134,7 @@ class MapScreen extends Component {
   }
 
   onRegionChange(region) {
-    this.setState({ region });
+    this.setState({ mapRegion: region });
   }
 
   openSearchModal() {
@@ -117,7 +144,7 @@ class MapScreen extends Component {
         // place represents user's selection from the
         // suggestions and it is a simplified Google Place object.
         this.setState({
-          region: {
+          mapRegion: {
             latitude: place.latitude,
             longitude: place.longitude,
             latitudeDelta: LATITUDE_DELTA,
@@ -139,7 +166,7 @@ class MapScreen extends Component {
   }
 
   onTopicSubmit = () => {
-    const { topicContent, topicCategory, region } = this.state;
+    const { topicContent, topicCategory, mapRegion } = this.state;
     var d = new Date();
     var currentTime = d.toUTCString();
 
@@ -147,7 +174,7 @@ class MapScreen extends Component {
     firebase
       .database()
       .ref(`users/${currentUser.uid}/topics`)
-      .push({ topicContent, topicCategory, region, currentTime });
+      .push({ topicContent, topicCategory, mapRegion, currentTime });
     this.setState({ showForm: false });
   };
 
@@ -184,7 +211,23 @@ class MapScreen extends Component {
     //   .on('value', snapshot => {
     //     snapshot.val()
     //   });
-    return <CustomMarker coordinate={this.state.fixedRegion} />;
+    return (
+      markers.map((marker, i) => {
+        var topic = marker.topic;
+        return (
+          <MapView.Marker
+            key={marker.id}
+            coordinate={marker.coordinate}
+          >
+            <CustomMarker
+              topic={topic}
+              backgroundColor={TopicType[topic]}
+            />
+
+          </MapView.Marker>
+        );
+      })
+    );
   }
 
   render() {
@@ -193,8 +236,9 @@ class MapScreen extends Component {
         <MapView
           showsUserLocation
           followsUserLocation
+          showsMyLocationButton={false}
           style={styles.MapStyle}
-          region={this.state.region}
+          region={this.state.mapRegion}
           onRegionChangeComplete={this.onRegionChange.bind(this)}
         >
           {this.renderMarkers()}
