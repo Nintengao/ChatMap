@@ -196,7 +196,7 @@ class MapScreen extends Component {
           onRegionChange={this.onRegionChange.bind(this)}
           onRegionChangeComplete={this.onRegionChange.bind(this)}
         >
-          {this.renderMarkers()}
+          {/*this.renderMarkers()*/}
         </MapView>
         {this.renderSearchButton()}
         {this.renderIssueForm()}
