@@ -5,9 +5,6 @@ import SettingsList from 'react-native-settings-list';
 import { logoutUser } from '../actions';
 
 class SettingScreen extends Component {
-  static navigationOptions = {
-    title: 'Deck'
-  };
 
   render() {
     return (
