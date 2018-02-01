@@ -4,9 +4,9 @@ import {
   View,
   TouchableOpacity
 } from 'react-native';
-import { Section } from './common';
+import { DeckSection } from './DeckSection';
 
-const ChatRoomDetail = ({ room }) => {
+const DeckDetail = ({ room }) => {
   const { question, issuer } = room;
   const {
     thumbnailStyle,
@@ -19,17 +19,17 @@ const ChatRoomDetail = ({ room }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity>
-        <Section>
+        <DeckSection>
           <View style={styles.contentStyle}>
             <Text>Question: {question}</Text>
           </View>
-        </Section>
+        </DeckSection>
 
-        <Section>
-        <View style={styles.contentStyle}>
-          <Text>Issuer: {issuer}</Text>
-        </View>
-        </Section>
+        <DeckSection>
+          <View style={styles.contentStyle}>
+            <Text>Issuer: {issuer}</Text>
+          </View>
+        </DeckSection>
       </TouchableOpacity>
     </View>
   );
@@ -74,4 +74,4 @@ const styles = {
   }
 };
 
-export default ChatRoomDetail;
+export { DeckDetail };
