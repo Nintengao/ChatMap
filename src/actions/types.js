@@ -1,5 +1,5 @@
-export const EMAIL_CHANGED = 'email_changed';
-export const PASSWORD_CHANGED = 'password_changed';
+export const LOGIN_EMAIL_CHANGED = 'login_email_changed';
+export const LOGIN_PASSWORD_CHANGED = 'login_password_changed';
 export const LOGIN_USER_SUCCESS = 'login_user_success';
 export const LOGIN_USER_FAIL = 'login_user_fail';
 export const LOGIN_USER_START = 'login_user_start';
@@ -7,5 +7,9 @@ export const LOGOUT_USER_START = 'logout_user_start';
 export const LOGOUT_USER_SUCCESS = 'logout_user_success';
 export const LOGOUT_USER_FAIL = 'logout_user_failed';
 export const SIGNUP_USER_FAIL = 'signup_user_failed';
+export const SIGNUP_EMAIL_CHANGED = 'signup_email_changed';
+export const SIGNUP_PASSWORD_CHANGED = 'signup_password_changed';
+export const SIGNUP_USER_START = 'signup_user_start';
 export const CHECKING_SESSION_START = 'checking_session_start';
 export const CHECKING_SESSION_FAIL = 'checking_session_fail';
+export const NAVIGATE_TO_REG = 'navigate_to_reg';

@@ -4,10 +4,11 @@ import { NavigationActions } from 'react-navigation';
 import { Card, CardSection, Input, Button, Spinner } from '../components';
 import { connect } from 'react-redux';
 import {
-  emailChanged,
-  passwordChanged,
+  loginemailChanged,
+  loginpasswordChanged,
   loginUser,
-  checksession
+  checksession,
+  navtoReg
 } from '../actions';
 
 class AuthScreen extends Component {
@@ -15,19 +16,12 @@ class AuthScreen extends Component {
     title: 'Authentication'
   };
 
-  navigate = () => {
-    const nav = NavigationActions.navigate({
-      routeName: 'reg'
-    });
-    this.props.navigation.dispatch(nav);
-  };
-
   componentWillMount() {
     this.props.checksession();
   }
 
   renderError() {
-    if (this.props.error) {
+    if (this.props.loginerror) {
       return (
         <View style={{ backgroundColor: 'white' }}>
           <Text
@@ -37,15 +31,15 @@ class AuthScreen extends Component {
               color: 'red'
             }}
           >
-            {this.props.error}
+            {this.props.loginerror}
           </Text>
         </View>
       );
     }
   }
 
-  renderLoginButton() {
-    const { email, password } = this.props;
+  renderAuthButtons() {
+    const { loginemail, loginpassword } = this.props;
 
     if (this.props.loading) {
       return (
@@ -56,24 +50,18 @@ class AuthScreen extends Component {
     }
     return (
       <CardSection>
-        <Button onPress={() => this.props.loginUser({ email, password })}>
+        <Button
+          onPress={() => this.props.loginUser({ loginemail, loginpassword })}
+        >
           Login
         </Button>
-        <Button onPress={this.navigate}>New User?</Button>
+        <Button onPress={() => this.props.navtoReg()}>New User?</Button>
       </CardSection>
     );
   }
 
-  renderSignUpButton() {
-    if (this.props.loading) {
-      return <Spinner size="large" />;
-    }
-    return <Button onPress={this.navigate}>New User?</Button>;
-  }
-
   render() {
-    const { email, password } = this.props;
-    //console.log(this.props.user);
+    const { loginemail, loginpassword } = this.props;
     if (this.props.loading_session) {
       return (
         <View
@@ -94,8 +82,8 @@ class AuthScreen extends Component {
             <Input
               label="Email"
               placeholder="email@gmail.com"
-              onChangeText={text => this.props.emailChanged(text)}
-              value={email}
+              onChangeText={text => this.props.loginemailChanged(text)}
+              value={loginemail}
             />
           </CardSection>
 
@@ -104,14 +92,13 @@ class AuthScreen extends Component {
               secureTextEntry
               label="Password"
               placeholder="password"
-              onChangeText={text => this.props.passwordChanged(text)}
-              value={password}
+              onChangeText={text => this.props.loginpasswordChanged(text)}
+              value={loginpassword}
             />
           </CardSection>
 
           {this.renderError()}
-
-          {this.renderLoginButton()}
+          {this.renderAuthButtons()}
         </Card>
       );
     }
@@ -120,17 +107,18 @@ class AuthScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    email: state.authReducer.email,
-    password: state.authReducer.password,
-    error: state.authReducer.error,
+    loginemail: state.authReducer.loginemail,
+    loginpassword: state.authReducer.loginpassword,
+    loginerror: state.authReducer.loginerror,
     loading: state.authReducer.loading,
     loading_session: state.authReducer.loading_session
   };
 };
 
 export default connect(mapStateToProps, {
-  emailChanged,
-  passwordChanged,
+  loginemailChanged,
+  loginpasswordChanged,
   loginUser,
-  checksession
+  checksession,
+  navtoReg
 })(AuthScreen);
