@@ -8,29 +8,32 @@ import {
 import { CardSection } from './CardSection';
 import { MapInput } from './MapInput';
 import { Input } from './Input';
-import QuestionTypes from '../assets/categories/Questions.json';
+import TopicType from '../assets/categories/TopicType.json';
 
 const IssueForm = ({ onContentChange, onPickerValueChange, pickerSelectedValue, onSubmitPress }) => {
   return (
     <CardSection style={styles.containerStyle}>
-      <CardSection>
+      <CardSection style={styles.sectionStyle}>
         <Text>Topic: </Text>
         <MapInput
-          placeholder='Enter your topic'
+          placeholder="Enter your topic"
           onChangeText={onContentChange}
         />
       </CardSection>
 
-      <CardSection>
+      <CardSection style={styles.sectionStyle}>
         <Text>Category: </Text>
         <Picker
           style={{flex: 1}}
           selectedValue={pickerSelectedValue}
-          onValueChange={onPickerValueChange}>
-          <Picker.Item label="Music" value="Music" />
-          <Picker.Item label="Sport" value="Sport" />
-          <Picker.Item label="Study" value="Study" />
-          <Picker.Item label="Other" value="Other" />
+          onValueChange={onPickerValueChange}
+        >
+          {
+            Object.keys(TopicType).map((key) => {
+              return (
+                <Picker.Item label={key} value={key} key={key}/>)
+            })
+          }
         </Picker>
       </CardSection>
 
@@ -67,7 +70,9 @@ const styles = {
     alignSelf: 'center',
     alignItems: 'center',
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'column'
+  },
+  sectionStyle: {
   }
 };
 
