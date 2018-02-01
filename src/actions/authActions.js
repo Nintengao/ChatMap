@@ -7,7 +7,9 @@ import {
   LOGOUT_USER_START,
   LOGOUT_USER_SUCCESS,
   LOGOUT_USER_FAIL,
-  SIGNUP_USER_FAIL
+  SIGNUP_USER_FAIL,
+  CHECKING_SESSION_START,
+  CHECKING_SESSION_FAIL
 } from './types';
 
 import firebase from 'firebase';
@@ -34,7 +36,19 @@ export const loginUser = ({ email, password }) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(user => loginUserSuccess(dispatch, user))
-      .catch(() => loginUserFail(dispatch));
+      .catch(error => loginUserFail(dispatch, error));
+  };
+};
+
+export const checksession = () => {
+  return dispatch => {
+    dispatch({ type: CHECKING_SESSION_START });
+
+    firebase.auth().onAuthStateChanged(user => {
+      user
+        ? loginUserSuccess(dispatch, user)
+        : dispatch({ type: CHECKING_SESSION_FAIL });
+    });
   };
 };
 
@@ -69,8 +83,11 @@ const loginUserSuccess = (dispatch, user) => {
   });
 };
 
-const loginUserFail = dispatch => {
-  dispatch({ type: LOGIN_USER_FAIL });
+const loginUserFail = (dispatch, error) => {
+  dispatch({
+    type: LOGIN_USER_FAIL,
+    payload: error
+  });
 };
 
 const logoutUserSuccess = (dispatch, user) => {

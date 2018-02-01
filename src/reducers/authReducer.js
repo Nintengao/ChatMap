@@ -7,7 +7,9 @@ import {
   LOGOUT_USER_START,
   LOGOUT_USER_SUCCESS,
   LOGOUT_USER_FAIL,
-  SIGNUP_USER_FAIL
+  SIGNUP_USER_FAIL,
+  CHECKING_SESSION_START,
+  CHECKING_SESSION_FAIL
 } from '../actions/types';
 
 const initState = {
@@ -15,11 +17,22 @@ const initState = {
   password: '',
   user: null,
   error: '',
-  loading: false
+  loading: false,
+  loading_session: false
 };
 
 const authReducer = (state = initState, action) => {
   switch (action.type) {
+    case CHECKING_SESSION_START:
+      return {
+        ...state,
+        loading_session: true
+      };
+    case CHECKING_SESSION_FAIL:
+      return {
+        ...state,
+        loading_session: false
+      };
     case EMAIL_CHANGED:
       return {
         ...state,
@@ -41,7 +54,7 @@ const authReducer = (state = initState, action) => {
     case LOGIN_USER_FAIL:
       return {
         ...state,
-        error: 'Auth Failed.',
+        error: action.payload.message,
         password: '',
         loading: false
       };

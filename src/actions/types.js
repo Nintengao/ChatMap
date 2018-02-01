@@ -7,3 +7,5 @@ export const LOGOUT_USER_START = 'logout_user_start';
 export const LOGOUT_USER_SUCCESS = 'logout_user_success';
 export const LOGOUT_USER_FAIL = 'logout_user_failed';
 export const SIGNUP_USER_FAIL = 'signup_user_failed';
+export const CHECKING_SESSION_START = 'checking_session_start';
+export const CHECKING_SESSION_FAIL = 'checking_session_fail';
