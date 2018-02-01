@@ -21,15 +21,15 @@ class DeckScreen extends Component {
 
   constructor() {
     super();
-    this.state = { rooms: [
-      { question: 'Where is school?', issuer: 'Robert' },
-      { question: 'Looking for friend.', issuer: 'James' },
-      { question: 'Finding my cat.', issuer: 'Amanda' }
+    this.state = { topics: [
+      { content: 'When is the concert?', type: 'Music', userImage: 'https://upload.wikimedia.org/wikipedia/commons/8/88/%28Marie_Claire_Korea%29_%EC%A7%80%EA%B8%88%2C_%EC%9D%B4%EC%84%B1%EA%B2%BD.jpg' },
+      { content: 'Looking for teammates for basketball.', type: 'Sport', userImage: 'http://blog.psychicsforetell.com/wp-content/uploads/2012/11/Feminist-Ryan-Gosling-269x300.jpg' },
+      { content: 'Waiting time at Starbucks?', type: 'Food', userImage: 'http://cache.etcnepal.com/wp-content/uploads/2016/05/Conan-OBrien.jpg' }
     ] };
   }
   renderRooms() {
-    return this.state.rooms.map(room =>
-      <DeckDetail key={room.question} room={room} />
+    return this.state.topics.map(topic =>
+      <DeckDetail key={topic.content} topic={topic} />
     );
   }
   render() {
