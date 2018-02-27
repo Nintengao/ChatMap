@@ -15,7 +15,7 @@ import {
   IssueButton,
   IssueForm
 } from '../components';
-import TopicType from '../assets/categories/Questions.json';
+import TopicType from '../assets/categories/TopicType.json';
 
 const screen = Dimensions.get('window');
 const WINDOW_HEIGHT = screen.height;
@@ -26,8 +26,7 @@ const INITIAL_LONGITUDE = -79.3955;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const FORM_WIDTH = WINDOW_WIDTH - 40;
-const FORM_HEIGHT = WINDOW_HEIGHT - 200;
+const FORM_HEIGHT = (WINDOW_HEIGHT - 200) * 0.8;
 
 const MARKER_LATITUDE = 43.6466495;
 const MARKER_LONGITUDE = -79.3759458;
@@ -64,6 +63,8 @@ class MapScreen extends Component {
     title: 'Map',
     header: null
   };
+
+  map = null;
 
   constructor() {
     super();
@@ -115,6 +116,7 @@ class MapScreen extends Component {
         }
       }
     );
+
     this.watchID = navigator.geolocation.watchPosition(
       position => {
         this.setState({
@@ -155,16 +157,6 @@ class MapScreen extends Component {
       .catch(error => console.log(error.message)); // error is a Javascript Error object
   }
 
-  renderSearchButton() {
-    return (
-      <View style={styles.searchView}>
-        <SearchButton onPress={() => this.openSearchModal()}>
-          <Text>Explore your surrounding</Text>
-        </SearchButton>
-      </View>
-    );
-  }
-
   onTopicSubmit = () => {
     const { topicContent, topicCategory, mapRegion } = this.state;
     var d = new Date();
@@ -178,17 +170,30 @@ class MapScreen extends Component {
     this.setState({ showForm: false });
   };
 
-  renderIssueForm() {
+  renderSearchButton() {
+    return (
+      <View style={styles.searchView}>
+        <SearchButton onPress={() => this.openSearchModal()}>
+          <Text>Explore your surrounding</Text>
+        </SearchButton>
+      </View>
+    );
+  }
+
+  renderIssueForm = () => {
+    console.log('Enter renderIssueForm');
+
     if (this.state.showForm) {
+      console.log(this.state.showForm);
       return (
-        <View style={styles.issueFormStyle}>
+        <View style={{marginTop: 30, marginLeft: 20, marginRight: 20, height: FORM_HEIGHT}}>
           <IssueForm
+            style={styles.issueFormStyle}
             onContentChange={text => this.setState({ topicContent: text })}
-            onPickerValueChange={(itemValue, itemIndex) =>
-              this.setState({ topicCategory: itemValue })
-            }
+            onPickerValueChange={(itemValue, itemIndex) => this.setState({ topicCategory: itemValue })}
             pickerSelectedValue={this.state.topicCategory}
             onSubmitPress={this.onTopicSubmit.bind(this)}
+            onClosePress={() => this.setState({ showForm: false })}
           />
         </View>
       );
@@ -197,12 +202,9 @@ class MapScreen extends Component {
     return null;
   }
 
-  onIssueButtonPress = () => {
-    this.setState({ showForm: !this.state.showForm });
-  };
-
   renderIssueButton() {
-    return <IssueButton onPress={this.onIssueButtonPress} />;
+    console.log('enter renderIssueButton');
+    return <IssueButton onPress={() => this.setState({ showForm: !this.state.showForm })} />;
   }
 
   renderMarkers() {
@@ -211,6 +213,8 @@ class MapScreen extends Component {
     //   .on('value', snapshot => {
     //     snapshot.val()
     //   });
+
+    console.log('enter renderMarkers');
     return (
       markers.map((marker, i) => {
         var topic = marker.topic;
@@ -223,7 +227,6 @@ class MapScreen extends Component {
               topic={topic}
               backgroundColor={TopicType[topic]}
             />
-
           </MapView.Marker>
         );
       })
@@ -231,6 +234,7 @@ class MapScreen extends Component {
   }
 
   render() {
+    console.log('enter render');
     return (
       <View style={styles.container}>
         <MapView
@@ -240,6 +244,7 @@ class MapScreen extends Component {
           style={styles.MapStyle}
           region={this.state.mapRegion}
           onRegionChangeComplete={this.onRegionChange.bind(this)}
+          onPress={() => this.setState({ showForm: false })}
         >
           {this.renderMarkers()}
         </MapView>
@@ -254,7 +259,6 @@ class MapScreen extends Component {
 const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
     backgroundColor: '#F5FCFF'
@@ -282,10 +286,7 @@ const styles = {
     alignSelf: 'center'
   },
   issueFormStyle: {
-    height: FORM_HEIGHT,
-    width: FORM_WIDTH,
     zIndex: 100,
-    backgroundColor: 'transparent',
     alignSelf: 'center',
     alignItems: 'center'
   }
