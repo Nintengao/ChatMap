@@ -11,3 +11,4 @@ export * from './MapInput';
 export * from './IssueButton';
 export * from './IssueForm';
 export * from './DeckDetail';
+export * from './MyLocationButton';

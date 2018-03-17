@@ -13,7 +13,8 @@ import {
   SearchButton,
   CustomMarker,
   IssueButton,
-  IssueForm
+  IssueForm,
+  MyLocationButton
 } from '../components';
 import TopicType from '../assets/categories/TopicType.json';
 
@@ -23,10 +24,12 @@ const WINDOW_WIDTH = screen.width;
 const ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT;
 const INITIAL_LATITUDE = 43.6608;
 const INITIAL_LONGITUDE = -79.3955;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+// const LATITUDE_DELTA = 0.0922;
+// const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const LATITUDE_DELTA = 0.005;
+const LONGITUDE_DELTA = 0.005;
 
-const FORM_HEIGHT = (WINDOW_HEIGHT - 200) * 0.8;
+const FORM_HEIGHT = (WINDOW_HEIGHT - 200) * 0.9;
 
 const MARKER_LATITUDE = 43.6466495;
 const MARKER_LONGITUDE = -79.3759458;
@@ -64,7 +67,7 @@ class MapScreen extends Component {
     header: null
   };
 
-  map = null;
+  _map = null;
 
   constructor() {
     super();
@@ -223,16 +226,6 @@ class MapScreen extends Component {
     }
   }
 
-  renderSearchButton() {
-    return (
-      <View style={styles.searchView}>
-        <SearchButton onPress={() => this.openSearchModal()}>
-          <Text>Explore your surrounding</Text>
-        </SearchButton>
-      </View>
-    );
-  }
-
   renderIssueForm = () => {
     if (this.state.showForm) {
       return (
@@ -250,10 +243,6 @@ class MapScreen extends Component {
     }
 
     return null;
-  }
-
-  renderIssueButton() {
-    return <IssueButton onPress={() => this.setState({ showForm: !this.state.showForm })} />;
   }
 
   renderMarkers() {
@@ -281,10 +270,21 @@ class MapScreen extends Component {
     );
   }
 
+  animateToCurrentLocation = async () => {
+    this.setState({showPin: false});
+    this._map.animateToRegion({
+      latitude: this.state.userRegion.latitude,
+      longitude: this.state.userRegion.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }, 2000);
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <MapView
+          ref={component => {this._map = component;}}
           showsUserLocation
           followsUserLocation
           showsMyLocationButton={false}
@@ -297,9 +297,24 @@ class MapScreen extends Component {
           {this.renderDumpMarker()}
           {this.renderSearchPin()}
         </MapView>
-        {this.renderSearchButton()}
+
+        <View style={styles.searchView}>
+          <SearchButton onPress={() => this.openSearchModal()}>
+            <Text>Explore your surrounding</Text>
+          </SearchButton>
+        </View>
+
         {this.renderIssueForm()}
-        {this.renderIssueButton()}
+
+        <IssueButton
+          onPress={() => this.setState({ showForm: !this.state.showForm })}
+        />
+
+        <View style={styles.myLocationButton}>
+          <MyLocationButton
+            onPress={() => this.animateToCurrentLocation()}
+          />
+        </View>
       </View>
     );
   }
@@ -317,7 +332,8 @@ const styles = {
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    zIndex: -1
   },
   searchView: {
     height: 50,
@@ -328,7 +344,7 @@ const styles = {
     left: 0,
     right: 0,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   issueButtonStyle: {
     height: WINDOW_HEIGHT,
@@ -338,6 +354,18 @@ const styles = {
     zIndex: 100,
     alignSelf: 'center',
     alignItems: 'center'
+  },
+  myLocationButton: {
+    height: 35,
+    width: 35,
+    position: 'absolute',
+    zIndex: 100,
+    bottom: 135,
+    right: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    padding: 10
   }
 };
 
