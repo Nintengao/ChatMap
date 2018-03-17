@@ -3,7 +3,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Card, CardSection, Input, Button, Spinner } from '../components';
 import { connect } from 'react-redux';
-import { emailChanged, passwordChanged, signupUser } from '../actions';
+import {
+  signupemailChanged,
+  signuppasswordChanged,
+  signupUser
+} from '../actions';
 
 class RegScreen extends Component {
   static navigationOptions = {
@@ -11,7 +15,7 @@ class RegScreen extends Component {
   };
 
   renderError() {
-    if (this.props.error) {
+    if (this.props.signuperror) {
       return (
         <View style={{ backgroundColor: 'white' }}>
           <Text
@@ -21,7 +25,7 @@ class RegScreen extends Component {
               color: 'red'
             }}
           >
-            {this.props.error}
+            {this.props.signuperror}
           </Text>
         </View>
       );
@@ -29,29 +33,30 @@ class RegScreen extends Component {
   }
 
   renderButton() {
-    const { email, password } = this.props;
+    const { signupemail, signuppassword } = this.props;
 
     if (this.props.loading) {
       return <Spinner size="large" />;
     }
     return (
-      <Button onPress={() => this.props.signupUser({ email, password })}>
+      <Button
+        onPress={() => this.props.signupUser({ signupemail, signuppassword })}
+      >
         Sign Up
       </Button>
     );
   }
 
   render() {
-    const { email, password } = this.props;
-    //console.log(this.props.user);
+    const { signupemail, signuppassword } = this.props;
     return (
       <Card>
         <CardSection>
           <Input
             label="Email"
             placeholder="email@gmail.com"
-            onChangeText={text => this.props.emailChanged(text)}
-            value={email}
+            onChangeText={text => this.props.signupemailChanged(text)}
+            value={signupemail}
           />
         </CardSection>
 
@@ -60,8 +65,8 @@ class RegScreen extends Component {
             secureTextEntry
             label="Password"
             placeholder="password"
-            onChangeText={text => this.props.passwordChanged(text)}
-            value={password}
+            onChangeText={text => this.props.signuppasswordChanged(text)}
+            value={signuppassword}
           />
         </CardSection>
 
@@ -75,16 +80,15 @@ class RegScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    email: state.authReducer.email,
-    password: state.authReducer.password,
-    error: state.authReducer.error,
-    loading: state.authReducer.loading,
-    user: state.authReducer.user
+    signupemail: state.regReducer.signupemail,
+    signuppassword: state.regReducer.signuppassword,
+    signuperror: state.regReducer.signuperror,
+    loading: state.regReducer.loading
   };
 };
 
 export default connect(mapStateToProps, {
-  emailChanged,
-  passwordChanged,
+  signupemailChanged,
+  signuppasswordChanged,
   signupUser
 })(RegScreen);

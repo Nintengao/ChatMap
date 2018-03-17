@@ -3,22 +3,25 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Card, CardSection, Input, Button, Spinner } from '../components';
 import { connect } from 'react-redux';
-import { emailChanged, passwordChanged, loginUser } from '../actions';
+import {
+  loginemailChanged,
+  loginpasswordChanged,
+  loginUser,
+  checksession,
+  navtoReg
+} from '../actions';
 
 class AuthScreen extends Component {
   static navigationOptions = {
     title: 'Authentication'
   };
 
-  navigate = () => {
-    const nav = NavigationActions.navigate({
-      routeName: 'reg'
-    });
-    this.props.navigation.dispatch(nav);
-  };
+  componentWillMount() {
+    this.props.checksession();
+  }
 
   renderError() {
-    if (this.props.error) {
+    if (this.props.loginerror) {
       return (
         <View style={{ backgroundColor: 'white' }}>
           <Text
@@ -28,78 +31,94 @@ class AuthScreen extends Component {
               color: 'red'
             }}
           >
-            {this.props.error}
+            {this.props.loginerror}
           </Text>
         </View>
       );
     }
   }
 
-  renderLoginButton() {
-    const { email, password } = this.props;
+  renderAuthButtons() {
+    const { loginemail, loginpassword } = this.props;
 
     if (this.props.loading) {
-      return <Spinner size="large" />;
+      return (
+        <CardSection>
+          <Spinner size="large" />
+        </CardSection>
+      );
     }
     return (
-      <Button onPress={() => this.props.loginUser({ email, password })}>
-        Login
-      </Button>
+      <CardSection>
+        <Button
+          onPress={() => this.props.loginUser({ loginemail, loginpassword })}
+        >
+          Login
+        </Button>
+        <Button onPress={() => this.props.navtoReg()}>New User?</Button>
+      </CardSection>
     );
-  }
-
-  renderSignUpButton() {
-    if (this.props.loading) {
-      return <Spinner size="large" />;
-    }
-    return <Button onPress={this.navigate}>New User?</Button>;
   }
 
   render() {
-    const { email, password } = this.props;
-    //console.log(this.props.user);
-    return (
-      <Card>
-        <CardSection>
-          <Input
-            label="Email"
-            placeholder="email@gmail.com"
-            onChangeText={text => this.props.emailChanged(text)}
-            value={email}
-          />
-        </CardSection>
+    const { loginemail, loginpassword } = this.props;
+    if (this.props.loading_session) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Spinner size="large" />
+        </View>
+      );
+    } else {
+      return (
+        <Card>
+          <CardSection>
+            <Input
+              label="Email"
+              placeholder="email@gmail.com"
+              onChangeText={text => this.props.loginemailChanged(text)}
+              value={loginemail}
+            />
+          </CardSection>
 
-        <CardSection>
-          <Input
-            secureTextEntry
-            label="Password"
-            placeholder="password"
-            onChangeText={text => this.props.passwordChanged(text)}
-            value={password}
-          />
-        </CardSection>
+          <CardSection>
+            <Input
+              secureTextEntry
+              label="Password"
+              placeholder="password"
+              onChangeText={text => this.props.loginpasswordChanged(text)}
+              value={loginpassword}
+            />
+          </CardSection>
 
-        {this.renderError()}
-
-        <CardSection>{this.renderLoginButton()}</CardSection>
-        <CardSection>{this.renderSignUpButton()}</CardSection>
-      </Card>
-    );
+          {this.renderError()}
+          {this.renderAuthButtons()}
+        </Card>
+      );
+    }
   }
 }
 
 const mapStateToProps = state => {
   return {
-    email: state.authReducer.email,
-    password: state.authReducer.password,
-    error: state.authReducer.error,
+    loginemail: state.authReducer.loginemail,
+    loginpassword: state.authReducer.loginpassword,
+    loginerror: state.authReducer.loginerror,
     loading: state.authReducer.loading,
-    user: state.authReducer.user
+    loading_session: state.authReducer.loading_session
   };
 };
 
 export default connect(mapStateToProps, {
-  emailChanged,
-  passwordChanged,
-  loginUser
+  loginemailChanged,
+  loginpasswordChanged,
+  loginUser,
+  checksession,
+  navtoReg
 })(AuthScreen);

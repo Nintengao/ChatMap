@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 import SettingsList from 'react-native-settings-list';
 import { logoutUser } from '../actions';
 
-class SettingScreen extends Component {
+class displaySettingScreen extends Component {
   constructor(){
     super();
     this.onValueChange = this.onValueChange.bind(this);
     this.state = {switchValue: false, loggedIn: false};
   }
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={{backgroundColor:'#f6f6f6',flex:1}}>
         <View style={{borderBottomWidth:1, backgroundColor:'#263238',borderColor:'#c8c7cc'}}>
@@ -22,7 +21,7 @@ class SettingScreen extends Component {
             <SettingsList.Header headerStyle={{marginTop:-5}}/>
             <SettingsList.Item
               hasNavArrow={false}
-              title='Device'
+              title='Display'
               titleStyle={{color:'#009688', marginBottom:10, fontWeight:'bold'}}
               itemWidth={70}
               borderHide={'Both'}
@@ -30,26 +29,16 @@ class SettingScreen extends Component {
             <SettingsList.Item
               icon={
                 <View style={styles.imageStyle}>
-                  <Image style={{alignSelf:'center',height:22, width:22}} source={require('../img/display2.png')}/>
-                </View>
-              }
-              title='Display'
-              itemWidth={70}
-              titleStyle={{color:'black', fontSize: 16}}
-              hasNavArrow={true}
-              onPress={()=>navigate('display')}
-            />
-            <SettingsList.Item
-              icon={
-                <View style={styles.imageStyle}>
                   <Image style={{alignSelf:'center',height:20, width:18}} source={require('../img/sound.png')}/>
                 </View>
               }
-              title='Sound & notification'
+              title='Dark Theme'
               itemWidth={70}
               titleStyle={{color:'black', fontSize: 16}}
-              hasNavArrow={true}
-              onPress={()=>navigate('notification')}
+              hasSwitch={true}
+              switchState={this.state.switchValue}
+              switchOnValueChange={this.onValueChange}
+              hasNavArrow={false}
             />
             <SettingsList.Item
               icon={
@@ -57,21 +46,10 @@ class SettingScreen extends Component {
                   <Image style={{alignSelf:'center',height:18, width:20}} source={require('../img/memory.png')}/>
                 </View>
               }
-              title='Save History'
+              title='Brightness'
               itemWidth={70}
               titleStyle={{color:'black', fontSize: 16}}
               hasNavArrow={false}
-              hasSwitch={true}
-              switchState={this.state.switchValue}
-              switchOnValueChange={this.onValueChange}
-            />
-            <SettingsList.Item
-              title='LOGOUT'
-              itemWidth={70}
-              titleStyle={{color:'black', fontSize: 16}}
-              hasNavArrow={false}
-              onPress={() => this.props.logoutUser()}
-
             />
             <SettingsList.Header headerStyle={{marginTop: -5}}/>
           </SettingsList>
@@ -102,4 +80,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { logoutUser })(SettingScreen);
+export default connect(mapStateToProps, { logoutUser })(displaySettingScreen);
