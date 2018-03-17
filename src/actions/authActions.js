@@ -1,52 +1,58 @@
 import {
-  EMAIL_CHANGED,
-  PASSWORD_CHANGED,
+  LOGIN_EMAIL_CHANGED,
+  LOGIN_PASSWORD_CHANGED,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
   LOGIN_USER_START,
   LOGOUT_USER_START,
   LOGOUT_USER_SUCCESS,
   LOGOUT_USER_FAIL,
-  SIGNUP_USER_FAIL
+  CHECKING_SESSION_START,
+  CHECKING_SESSION_FAIL,
+  NAVIGATE_TO_REG
 } from './types';
 
 import firebase from 'firebase';
 
-export const emailChanged = text => {
+export const navtoReg = () => {
+  return { type: NAVIGATE_TO_REG };
+};
+
+export const loginemailChanged = text => {
   return {
-    type: EMAIL_CHANGED,
+    type: LOGIN_EMAIL_CHANGED,
     payload: text
   };
 };
 
-export const passwordChanged = text => {
+export const loginpasswordChanged = text => {
   return {
-    type: PASSWORD_CHANGED,
+    type: LOGIN_PASSWORD_CHANGED,
     payload: text
   };
 };
 
-export const loginUser = ({ email, password }) => {
+export const loginUser = ({ loginemail, loginpassword }) => {
   return dispatch => {
     dispatch({ type: LOGIN_USER_START });
 
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(loginemail, loginpassword)
       .then(user => loginUserSuccess(dispatch, user))
-      .catch(() => loginUserFail(dispatch));
+      .catch(error => loginUserFail(dispatch, error));
   };
 };
 
-export const signupUser = ({ email, password }) => {
+export const checksession = () => {
   return dispatch => {
-    dispatch({ type: LOGIN_USER_START });
+    dispatch({ type: CHECKING_SESSION_START });
 
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(user => loginUserSuccess(dispatch, user))
-      .catch(error => signupUserFailed(dispatch, error));
+    firebase.auth().onAuthStateChanged(user => {
+      user
+        ? loginUserSuccess(dispatch, user)
+        : dispatch({ type: CHECKING_SESSION_FAIL });
+    });
   };
 };
 
@@ -69,8 +75,11 @@ const loginUserSuccess = (dispatch, user) => {
   });
 };
 
-const loginUserFail = dispatch => {
-  dispatch({ type: LOGIN_USER_FAIL });
+const loginUserFail = (dispatch, error) => {
+  dispatch({
+    type: LOGIN_USER_FAIL,
+    payload: error
+  });
 };
 
 const logoutUserSuccess = (dispatch, user) => {
@@ -82,11 +91,4 @@ const logoutUserSuccess = (dispatch, user) => {
 
 const logoutUserFail = dispatch => {
   dispatch({ type: LOGOUT_USER_FAIL });
-};
-
-const signupUserFailed = (dispatch, error) => {
-  dispatch({
-    type: SIGNUP_USER_FAIL,
-    payload: error
-  });
 };

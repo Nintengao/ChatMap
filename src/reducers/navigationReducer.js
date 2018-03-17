@@ -2,7 +2,8 @@ import {
   LOGIN_USER_SUCCESS,
   LOGIN_USER_START,
   LOGOUT_USER_START,
-  LOGOUT_USER_SUCCESS
+  LOGOUT_USER_SUCCESS,
+  NAVIGATE_TO_REG
 } from '../actions/types';
 
 import navigator from '../navigation/navigation';
@@ -13,12 +14,12 @@ const reset = NavigationActions.reset({
 });
 const actionToAuth = navigator.router.getActionForPathAndParams('auth');
 const actionToMain = navigator.router.getActionForPathAndParams('main');
+const actionToReg = navigator.router.getActionForPathAndParams('reg');
 const stateAtAuth = navigator.router.getStateForAction(actionToAuth);
 const stateAtMain = navigator.router.getStateForAction(actionToMain);
 const initState = stateAtAuth;
 
 const navigationReducer = (state = initState, action) => {
-  console.log(action);
   switch (action.type) {
     default:
       return navigator.router.getStateForAction(action, state) || state;
@@ -30,6 +31,8 @@ const navigationReducer = (state = initState, action) => {
       return state;
     case LOGOUT_USER_SUCCESS:
       return navigator.router.getStateForAction(reset);
+    case NAVIGATE_TO_REG:
+      return navigator.router.getStateForAction(actionToReg, state);
   }
 };
 
