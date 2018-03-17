@@ -83,7 +83,13 @@ class MapScreen extends Component {
       },
       showForm: false,
       topicContent: '',
-      topicCategory: 'Music'
+      topicCategory: 'Music',
+      newTopic: {
+        category: null,
+        content: null,
+        coordinates: null
+      },
+      showPin: false
     };
   }
 
@@ -142,7 +148,6 @@ class MapScreen extends Component {
   openSearchModal() {
     RNGooglePlaces.openAutocompleteModal()
       .then(place => {
-        console.log(place);
         // place represents user's selection from the
         // suggestions and it is a simplified Google Place object.
         this.setState({
@@ -151,7 +156,8 @@ class MapScreen extends Component {
             longitude: place.longitude,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
-          }
+          },
+          showPin: true
         });
       })
       .catch(error => console.log(error.message)); // error is a Javascript Error object
@@ -163,12 +169,59 @@ class MapScreen extends Component {
     var currentTime = d.toUTCString();
 
     const { currentUser } = firebase.auth();
-    firebase
-      .database()
-      .ref(`users/${currentUser.uid}/topics`)
-      .push({ topicContent, topicCategory, mapRegion, currentTime });
-    this.setState({ showForm: false });
+    // firebase
+    //   .database()
+    //   .ref(`users/${currentUser.uid}/topics`)
+    //   .push({ topicContent, topicCategory, mapRegion, currentTime });
+    // this.setState({ showForm: false });
+
+    this.setState({
+      newTopic: {
+        category: topicCategory,
+        content: topicContent,
+        coordinates: mapRegion
+      },
+      showForm: false
+    });
   };
+
+  renderDumpMarker() {
+    if (this.state.newTopic.category !== null) {
+      return (
+        <MapView.Marker
+          key={5}
+          coordinate={this.state.newTopic.coordinates}
+        >
+          <CustomMarker
+            topic={this.state.newTopic.category}
+            backgroundColor={TopicType[this.state.newTopic.category]}
+          />
+        </MapView.Marker>
+      );
+    }
+  }
+
+  renderSearchPin() {
+    const coord = {
+      latitude: this.state.mapRegion.latitude,
+      longitude: this.state.mapRegion.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    };
+    if (this.state.showPin) {
+      return (
+        <MapView.Marker
+          key={6}
+          coordinate={coord}
+        >
+          <CustomMarker
+            topic={'Pin'}
+            backgroundColor={TopicType['Pin']}
+          />
+        </MapView.Marker>
+      );
+    }
+  }
 
   renderSearchButton() {
     return (
@@ -181,10 +234,7 @@ class MapScreen extends Component {
   }
 
   renderIssueForm = () => {
-    console.log('Enter renderIssueForm');
-
     if (this.state.showForm) {
-      console.log(this.state.showForm);
       return (
         <View style={{marginTop: 30, marginLeft: 20, marginRight: 20, height: FORM_HEIGHT}}>
           <IssueForm
@@ -203,7 +253,6 @@ class MapScreen extends Component {
   }
 
   renderIssueButton() {
-    console.log('enter renderIssueButton');
     return <IssueButton onPress={() => this.setState({ showForm: !this.state.showForm })} />;
   }
 
@@ -214,7 +263,6 @@ class MapScreen extends Component {
     //     snapshot.val()
     //   });
 
-    console.log('enter renderMarkers');
     return (
       markers.map((marker, i) => {
         var topic = marker.topic;
@@ -234,7 +282,6 @@ class MapScreen extends Component {
   }
 
   render() {
-    console.log('enter render');
     return (
       <View style={styles.container}>
         <MapView
@@ -247,6 +294,8 @@ class MapScreen extends Component {
           onPress={() => this.setState({ showForm: false })}
         >
           {this.renderMarkers()}
+          {this.renderDumpMarker()}
+          {this.renderSearchPin()}
         </MapView>
         {this.renderSearchButton()}
         {this.renderIssueForm()}
